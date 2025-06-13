@@ -4,11 +4,11 @@ import { connectToRedis, redisClient } from './redis.js';
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.send('Hello from the server!');
 });
 
-app.get('/api/data', async (req, res) => {
+app.get('/api/data', async (_req, res) => {
   try {
     const data = await redisClient.get('test_key');
     res.json({ data });
