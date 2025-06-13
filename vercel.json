@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "src/api/server.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/src/api/server.ts"
+    }
+  ]
+}
