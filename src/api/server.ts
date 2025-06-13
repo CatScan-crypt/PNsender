@@ -1,17 +1,37 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { connectToRedis, redisClient } from './redis.js';
+
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.get('/', (_req, res) => {
-  res.send('Hello from the server!');
+app.get('/', (_req: Request, res: Response): void => {
+  res.send('Hello from the server! Try /api/user/1 or /api/product/101');
 });
 
-app.get('/api/data', async (_req, res) => {
+// Endpoint to fetch a user by ID
+app.get('/api/user/:id', async (req: Request, res: Response): Promise<void> => {
   try {
-    const data = await redisClient.get('test_key');
-    res.json({ data });
+    const user = await redisClient.hGetAll(`user:${req.params.id}`);
+    if (Object.keys(user).length === 0) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch data from Redis' });
+  }
+});
+
+// Endpoint to fetch a product by ID
+app.get('/api/product/:id', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const product = await redisClient.hGetAll(`product:${req.params.id}`);
+    if (Object.keys(product).length === 0) {
+      res.status(404).json({ error: 'Product not found' });
+      return;
+    }
+    res.json({ product });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch data from Redis' });
   }
@@ -22,8 +42,7 @@ const startServer = async () => {
     await connectToRedis();
     console.log('Connected to Redis successfully!');
 
-    // Set some mock data
-    await redisClient.set('test_key', 'Hello from Redis!');
+
 
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
