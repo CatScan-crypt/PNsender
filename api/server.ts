@@ -11,6 +11,7 @@ app.get('/', (_req: Request, res: Response): void => {
 
 // Endpoint to fetch a user by ID
 app.get('/api/user/:id', async (req: Request, res: Response): Promise<void> => {
+  console.log(`🟡 [Vercel] Received request for user: ${req.params.id}`);
   try {
     const user = await redisClient.hGetAll(`user:${req.params.id}`);
     if (Object.keys(user).length === 0) {
@@ -19,12 +20,14 @@ app.get('/api/user/:id', async (req: Request, res: Response): Promise<void> => {
     }
     res.json({ user });
   } catch (error) {
+    console.error('🔴 [Vercel] Error fetching user data:', error);
     res.status(500).json({ error: 'Failed to fetch data from Redis' });
   }
 });
 
 // Endpoint to fetch a product by ID
 app.get('/api/product/:id', async (req: Request, res: Response): Promise<void> => {
+  console.log(`🟡 [Vercel] Received request for product: ${req.params.id}`);
   try {
     const product = await redisClient.hGetAll(`product:${req.params.id}`);
     if (Object.keys(product).length === 0) {
@@ -33,6 +36,7 @@ app.get('/api/product/:id', async (req: Request, res: Response): Promise<void> =
     }
     res.json({ product });
   } catch (error) {
+    console.error('🔴 [Vercel] Error fetching product data:', error);
     res.status(500).json({ error: 'Failed to fetch data from Redis' });
   }
 });
@@ -48,7 +52,7 @@ const startServer = async () => {
       console.log(`Server is running on http://localhost:${port}`);
     });
   } catch (error) {
-    console.error('Failed to start the server:', error);
+    console.error('🔴 [Vercel] Failed to start the server:', error);
     process.exit(1);
   }
 };
