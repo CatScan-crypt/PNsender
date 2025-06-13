@@ -5,10 +5,6 @@ import { connectToRedis, redisClient } from './redis.js';
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.get('/', (_req: Request, res: Response): void => {
-  res.send('Hello from the server! Try /api/user/1 or /api/product/101');
-});
-
 // Endpoint to fetch a user by ID
 app.get('/api/user/:id', async (req: Request, res: Response): Promise<void> => {
   console.log(`🟡 [Vercel] Received request for user: ${req.params.id}`);
@@ -25,21 +21,6 @@ app.get('/api/user/:id', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// Endpoint to fetch a product by ID
-app.get('/api/product/:id', async (req: Request, res: Response): Promise<void> => {
-  console.log(`🟡 [Vercel] Received request for product: ${req.params.id}`);
-  try {
-    const product = await redisClient.hGetAll(`product:${req.params.id}`);
-    if (Object.keys(product).length === 0) {
-      res.status(404).json({ error: 'Product not found' });
-      return;
-    }
-    res.json({ product });
-  } catch (error) {
-    console.error('🔴 [Vercel] Error fetching product data:', error);
-    res.status(500).json({ error: 'Failed to fetch data from Redis' });
-  }
-});
 
 const startServer = async () => {
   try {

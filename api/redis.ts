@@ -12,7 +12,7 @@ dotenv.config({ path: envPath });
 const redisUrl = process.env.REDIS_URL;
 
 if (!redisUrl) {
-  console.error('🔴 [Vercel] Error: REDIS_URL is not defined in Vercel environment variables.');
+  console.error('🔴 Error: REDIS_URL is not defined. Please ensure a .env.development.local file exists in the project root and contains the REDIS_URL variable.');
   process.exit(1);
 }
 
@@ -20,14 +20,10 @@ export const redisClient = createClient({
   url: redisUrl
 });
 
-redisClient.on('error', (err) => console.error('🔴 [Vercel] Redis Client Error:', err));
-redisClient.on('connect', () => console.log('🟡 [Vercel] Redis client connecting...'));
-redisClient.on('ready', () => console.log('🟢 [Vercel] Redis client ready!'));
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
 export const connectToRedis = async () => {
   if (!redisClient.isOpen) {
-    console.log('🟡 [Vercel] Attempting to connect to Redis...');
     await redisClient.connect();
-    console.log('🟢 [Vercel] Successfully connected to Redis!');
   }
 };
