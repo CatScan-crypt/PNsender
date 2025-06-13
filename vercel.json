@@ -1,6 +1,6 @@
 {
   "functions": {
-    "src/api/server.ts": {
+    "api/server.ts": {
       "memory": 1024,
       "maxDuration": 10
     }
@@ -8,7 +8,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/src/api/server.ts"
+      "destination": "/api/server.ts"
     }
   ]
 }
