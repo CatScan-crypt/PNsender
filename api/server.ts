@@ -4,8 +4,7 @@ import admin from 'firebase-admin';
 import { connectToRedis, redisClient } from './redis.js';
 import dotenv from 'dotenv';
 dotenv.config();
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 // import serviceAccount from '../serviceAccount.json' assert { type: 'json' };
 const serviceAccount = JSON.parse(process.env.VITE_SERVICE_ACCOUNT!);
 admin.initializeApp({
