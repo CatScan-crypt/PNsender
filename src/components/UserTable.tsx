@@ -1,74 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-interface User {
+interface Token {
   id: string;
-  username: string;
-  email: string;
+  token: string;
+  browserType: string;
+  browserVersion: string;
   createdAt: string;
 }
 
-const UserTable = () => {
-  const [user, setUser] = useState<User | null>(null);
+const shortenId = (id: string | undefined) => {
+  if (!id) return '';
+  if (id.length <= 8) return id;
+  return `${id.slice(0, 2)}...${id.slice(-2)}`;
+};
+
+export const TokenTable = () => {
+  const [tokens, setTokens] = useState<Token[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchTokens = async () => {
       try {
-        // We fetch from a relative path. Vite/Vercel handles routing it to our API.
-        const response = await fetch('/api/user/1');
-
+        const response = await fetch('/api/tokens');
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error('Failed to fetch tokens');
         }
-
         const data = await response.json();
-        setUser(data.user);
-      } catch (e) {
-        if (e instanceof Error) {
-          setError(e.message);
-        }
+        setTokens(data.tokens);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
-  }, []); // The empty dependency array ensures this effect runs only once.
+    fetchTokens();
+    const interval = setInterval(fetchTokens, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-  if (loading) {
-    return <p>Loading user data...</p>;
-  }
-
-  if (error) {
-    return <p>Error fetching user: {error}</p>;
-  }
-
-  if (!user) {
-    return <p>No user data found.</p>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
-      <h2>User Details</h2>
-      <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '500px' }}>
-        <thead>
-          <tr>
-            <th style={{ border: '1px solid black', padding: '8px' }}>ID</th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>Username</th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>Email</th>
+    <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '500px' }}>
+      <thead>
+        <tr style={{ backgroundColor: 'black' }}>
+          <th style={{ border: '1px solid black', padding: '8px' }}>ID</th>
+          <th style={{ border: '1px solid black', padding: '8px' }}>Created At</th>
+          <th style={{ border: '1px solid black', padding: '8px' }}>Browser</th>
+          <th style={{ border: '1px solid black', padding: '8px' }}>Version</th>
+          <th style={{ border: '1px solid black', padding: '8px' }}>Token</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tokens.map((token, index) => (
+          <tr key={token.id} style={{ border: '1px solid black', padding: '8px' }}>
+            <td style={{ border: '1px solid black', padding: '8px' }}>{index + 1}</td>
+            <td style={{ border: '1px solid black', padding: '8px' }}>{new Date(token.createdAt).toLocaleString()}</td>
+            <td style={{ border: '1px solid black', padding: '8px' }}>{token.browserType}</td>
+            <td style={{ border: '1px solid black', padding: '8px' }}>{token.browserVersion}</td>
+            <td style={{ border: '1px solid black', padding: '8px' }}>{shortenId(token.token)}</td>
           </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={{ border: '1px solid black', padding: '8px' }}>{user.id}</td>
-            <td style={{ border: '1px solid black', padding: '8px' }}>{user.username}</td>
-            <td style={{ border: '1px solid black', padding: '8px' }}>{user.email}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 };
-
-export default UserTable;
