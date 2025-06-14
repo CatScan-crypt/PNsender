@@ -2,11 +2,12 @@ import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import admin from 'firebase-admin';
 import { connectToRedis, redisClient } from './redis.js';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import serviceAccount from '../serviceAccount.json' assert { type: 'json' };
-
+// import serviceAccount from '../serviceAccount.json' assert { type: 'json' };
+const serviceAccount = JSON.parse(process.env.VITE_SERVICE_ACCOUNT!);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -16,7 +17,7 @@ const app = express();
 
 // Enable CORS for requests from your frontend
 app.use(cors({
-  origin: ['http://localhost', 'http://localhost:5174','https://pnsend.vercel.app', 'p-nsender-catscans-projects.vercel.app'],
+  origin: ['http://localhost'],
   credentials: true // set to true if you use cookies/auth
 }));
 
