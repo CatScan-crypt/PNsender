@@ -5,6 +5,7 @@ import { connectToRedis } from './redis.js';
 import dotenv from 'dotenv';
 import tokensRouter from './routes/getRegisteredTokens.js';
 import sendNotificationRouter from './routes/sendNotification.js';
+import deleteTokensRouter from './routes/deleteTokens.js';
 
 dotenv.config();
 
@@ -45,5 +46,6 @@ const startServer = async () => {
 
 app.use('/api', tokensRouter);
 app.use('/api', sendNotificationRouter);
+app.use('/api', deleteTokensRouter);
 
 startServer();
