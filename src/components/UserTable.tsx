@@ -14,7 +14,11 @@ const shortenId = (id: string | undefined) => {
   return `${id.slice(0, 2)}...${id.slice(-2)}`;
 };
 
-export const TokenTable = () => {
+interface TokenTableProps {
+  onSelectionChange?: (selectedTokens: Token[]) => void;
+}
+
+export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -53,6 +57,10 @@ export const TokenTable = () => {
       } else {
         newSet.add(token);
       }
+      if (onSelectionChange) {
+        const selected = tokens.filter(t => newSet.has(t.token));
+        onSelectionChange(selected);
+      }
       return newSet;
     });
   };
@@ -60,9 +68,16 @@ export const TokenTable = () => {
   // Handler for select all
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedIds(new Set(tokens.map(t => t.token)));
+      const allIds = new Set(tokens.map(t => t.token));
+      setSelectedIds(allIds);
+      if (onSelectionChange) {
+        onSelectionChange(tokens);
+      }
     } else {
       setSelectedIds(new Set());
+      if (onSelectionChange) {
+        onSelectionChange([]);
+      }
     }
   };
 
@@ -92,13 +107,7 @@ export const TokenTable = () => {
 
   return (
     <div>
-      <button
-        style={{ marginBottom: '10px' }}
-        disabled={selectedIds.size === 0}
-        onClick={handleDeleteSelected}
-      >
-        Delete Selected
-      </button>
+
       <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '500px' }}>
         <thead>
           <tr style={{ backgroundColor: 'black' }}>
@@ -140,6 +149,13 @@ export const TokenTable = () => {
           ))}
         </tbody>
       </table>
+      <button
+        style={{ marginBottom: '10px' }}
+        disabled={selectedIds.size === 0}
+        onClick={handleDeleteSelected}
+      >
+        Delete Selected
+      </button>
     </div>
   );
 };
