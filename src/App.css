@@ -1,43 +1,91 @@
-#root {
+.appContainer {
+  text-align: left;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 1.2rem 3rem;
+  background-color: #1a1e27;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.header-title {
+  grid-column: 1 / 2;
+  justify-self: start;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+.header-title:hover {
+  transform: translateY(-1px);
+}
+
+.nav {
+  grid-column: 2 / 3;
+  justify-self: center;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.main {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navLink {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.navLink:hover {
+  background: rgba(79, 172, 254, 0.15);
+  color: #4facfe;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.card {
-  padding: 2em;
+.navLink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: 0.5s;
 }
 
-.read-the-docs {
-  color: #888;
+.navLink:hover::before {
+  transform: translateX(100%);
 }
 
+.navLink.active {
+  background: rgba(79, 172, 254, 0.2);
+  color: #4facfe;
+  border-color: rgba(79, 172, 254, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

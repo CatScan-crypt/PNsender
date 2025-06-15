@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import './UserTable.css';
 
 interface Token {
   id: string;
@@ -41,14 +42,18 @@ export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => 
     };
 
     fetchTokens();
-    const interval = setInterval(fetchTokens, 30000);
-    return () => clearInterval(interval);
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  useEffect(() => {
+    if (onSelectionChange) {
+      const selectedTokens = tokens.filter(token => selectedIds.has(token.token));
+      onSelectionChange(selectedTokens);
+    }
+  }, [selectedIds, tokens, onSelectionChange]);
 
-  // Handler for selecting/deselecting a single row
+  if (loading) return <div className="loading">Loading devices...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+
   const handleSelect = (token: string) => {
     setSelectedIds(prev => {
       const newSet = new Set(prev);
@@ -57,61 +62,49 @@ export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => 
       } else {
         newSet.add(token);
       }
-      if (onSelectionChange) {
-        const selected = tokens.filter(t => newSet.has(t.token));
-        onSelectionChange(selected);
-      }
       return newSet;
     });
   };
 
-  // Handler for select all
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       const allIds = new Set(tokens.map(t => t.token));
       setSelectedIds(allIds);
-      if (onSelectionChange) {
-        onSelectionChange(tokens);
-      }
     } else {
       setSelectedIds(new Set());
-      if (onSelectionChange) {
-        onSelectionChange([]);
-      }
     }
   };
 
-  // Handler for deleting selected
   const handleDeleteSelected = async () => {
     const idsToDelete = Array.from(selectedIds);
     if (idsToDelete.length === 0) return;
+    
     try {
       const response = await fetch('/api/tokens/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: idsToDelete })
       });
+      
       if (!response.ok) {
         throw new Error('Failed to delete tokens');
       }
+      
       const data = await response.json();
       setTokens(prev => prev.filter(token => !idsToDelete.includes(token.token)));
       setSelectedIds(new Set());
       console.log('Deleted token IDs:', data.deleted);
     } catch (err) {
       console.error('Error deleting tokens:', err);
-      // Optionally, show a user-facing error message here
     }
   };
 
-
   return (
     <div>
-
-      <table style={{ border: '1px solid black', borderCollapse: 'collapse', width: '500px' }}>
+      <table className="user-table">
         <thead>
-          <tr style={{ backgroundColor: 'black' }}>
-            <th style={{ border: '1px solid black', padding: '8px' }}>
+          <tr>
+            <th>
               <input
                 type="checkbox"
                 ref={el => {
@@ -123,38 +116,41 @@ export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => 
                 onChange={e => handleSelectAll(e.target.checked)}
               />
             </th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>ID</th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>Created At</th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>Browser</th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>Version</th>
-            <th style={{ border: '1px solid black', padding: '8px' }}>Token</th>
+            <th>ID</th>
+            <th>Created At</th>
+            <th>Browser</th>
+            <th>Version</th>
+            <th>Token</th>
           </tr>
         </thead>
         <tbody>
           {tokens.map((token, index) => (
-            <tr key={token.id} style={{ border: '1px solid black', padding: '8px' }}>
-              <td style={{ border: '1px solid black', padding: '8px', textAlign: 'center' }}>
+            <tr 
+              key={token.id} 
+              className={selectedIds.has(token.token) ? 'selected' : ''}
+            >
+              <td>
                 <input
                   type="checkbox"
                   checked={selectedIds.has(token.token)}
                   onChange={() => handleSelect(token.token)}
                 />
               </td>
-              <td style={{ border: '1px solid black', padding: '8px' }}>{index + 1}</td>
-              <td style={{ border: '1px solid black', padding: '8px' }}>{new Date(token.createdAt).toLocaleString()}</td>
-              <td style={{ border: '1px solid black', padding: '8px' }}>{token.browserType}</td>
-              <td style={{ border: '1px solid black', padding: '8px' }}>{token.browserVersion}</td>
-              <td style={{ border: '1px solid black', padding: '8px' }}>{shortenId(token.token)}</td>
+              <td>{index + 1}</td>
+              <td>{new Date(token.createdAt).toLocaleString()}</td>
+              <td>{token.browserType}</td>
+              <td>{token.browserVersion}</td>
+              <td className="token">{shortenId(token.token)}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <button
-        style={{ marginBottom: '10px' }}
+        className="delete-button"
         disabled={selectedIds.size === 0}
         onClick={handleDeleteSelected}
       >
-        Delete Selected
+        Delete Selected {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}
       </button>
     </div>
   );
