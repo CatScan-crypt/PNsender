@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SendNotificationForm = () => {
+const SendTestNotification = () => {
   const [token, setToken] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [body, setBody] = useState<string>('');
@@ -75,4 +75,4 @@ const SendNotificationForm = () => {
   );
 };
 
-export default SendNotificationForm;
+export default SendTestNotification;
