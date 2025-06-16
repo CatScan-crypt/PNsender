@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TokenTable } from './UserTable';
+import { TokenTable } from './UserTable/UserTable';
 import './Campaigns.css';
 
 const Campaigns: React.FC = () => {

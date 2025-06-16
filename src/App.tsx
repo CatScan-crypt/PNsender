@@ -1,5 +1,5 @@
-import SendTestNotification from './components/SendTestNotification';
-import Campaigns from './components/Campaigns';
+import SendTestNotification from './routes/SendTestNotification/SendTestNotification';
+import Campaigns from './routes/Campaigns/Campaigns';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 
