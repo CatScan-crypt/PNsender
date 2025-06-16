@@ -4,20 +4,28 @@ import admin from 'firebase-admin';
 const router = express.Router();
 
 router.post('/send-notification', async (req: Request, res: Response): Promise<void> => {
-  const { token, title, body } = req.body;
+  const { token, title, body, label, source } = req.body;
 
   if (!token || !title || !body) {
     res.status(400).json({ error: 'Missing token, title, or body' });
     return;
   }
 
+  const link: string = "http://localhost:5174";
   const message = {
     notification: {
       title,
       body,
     },
     token: token,
+    webpush: {
+      fcmOptions: {
+        link: source ?? link,
+        analyticsLabel: label ?? title,
+      },
+    },
   };
+
 
   try {
     const response = await admin.messaging().send(message);

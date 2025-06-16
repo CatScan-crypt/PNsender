@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage, getToken } from 'firebase/messaging';
+import { getMessaging, onMessage } from 'firebase/messaging';
+import { getAnalytics } from 'firebase/analytics'; // ✅ import analytics
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -8,11 +9,15 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID // ✅ required for analytics
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// ✅ Initialize analytics
+const analytics = getAnalytics(app);
+
 const messaging = getMessaging(app);
 
-export { app, messaging, getToken, onMessage };
+export { app, messaging, onMessage, analytics };
