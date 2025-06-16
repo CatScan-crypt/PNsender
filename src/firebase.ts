@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage } from 'firebase/messaging';
+import { getMessaging, onMessage, getToken } from 'firebase/messaging';
 import { getAnalytics } from 'firebase/analytics'; // ✅ import analytics
 
 const firebaseConfig = {
@@ -20,4 +20,4 @@ const analytics = getAnalytics(app);
 
 const messaging = getMessaging(app);
 
-export { app, messaging, onMessage, analytics };
+export { app, messaging, getToken, onMessage, analytics };

@@ -4,14 +4,13 @@ import admin from 'firebase-admin';
 const router = express.Router();
 
 router.post('/send-notification', async (req: Request, res: Response): Promise<void> => {
-  const { token, title, body, label, source } = req.body;
+  const { token, title, body, label, source} = req.body;
 
   if (!token || !title || !body) {
     res.status(400).json({ error: 'Missing token, title, or body' });
     return;
   }
-
-  const link: string = "http://localhost:5174";
+  const link:string = "http://localhost:5174";
   const message = {
     notification: {
       title,

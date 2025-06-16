@@ -28,6 +28,7 @@ const Campaigns: React.FC = () => {
             body: JSON.stringify({ token: t.token, title, body })
           });
           const data = await response.json();
+          
           if (response.ok) {
             results.push(`✅ Token ${t.token.slice(0, 8)}...: Sent! Message ID: ${data.messageId || ''}`);
           } else {
