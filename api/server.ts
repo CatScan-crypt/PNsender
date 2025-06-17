@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import tokensRouter from './routes/getRegisteredTokens.js';
 import sendNotificationRouter from './routes/sendNotification.js';
 import deleteTokensRouter from './routes/deleteTokens.js';
+import analyticsRouter from './routes/analytics.js';
 
 dotenv.config();
 
@@ -20,8 +21,8 @@ const app = express();
 
 // Enable CORS for requests from your frontend
 app.use(cors({
-  origin: ['http://localhost'],
-  credentials: true // set to true if you use cookies/auth
+  origin: ['http://localhost:5173', 'http://localhost:3001'],  // Add both common React ports
+  credentials: true
 }));
 
 app.use(express.json());
@@ -47,5 +48,6 @@ const startServer = async () => {
 app.use('/api', tokensRouter);
 app.use('/api', sendNotificationRouter);
 app.use('/api', deleteTokensRouter);
+app.use('/api', analyticsRouter);
 
 startServer();
