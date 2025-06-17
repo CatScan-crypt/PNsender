@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import admin from 'firebase-admin';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const router = express.Router();
 
 router.post('/send-notification', async (req: Request, res: Response): Promise<void> => {
@@ -10,7 +11,7 @@ router.post('/send-notification', async (req: Request, res: Response): Promise<v
     res.status(400).json({ error: 'Missing token, title, or body' });
     return;
   }
-  const link:string = "http://localhost:5174";
+  const link:string = process.env.LOCAL_HOST || "https://pnreceiver-git-dev-catscans-projects.vercel.app/";
   const message = {
     notification: {
       title,

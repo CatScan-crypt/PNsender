@@ -1,0 +1,32 @@
+[
+  {
+    "campaign": "Summer Sale 2024",
+    "start": "2024-07-01",
+    "end": "2024-07-31",
+    "status": "Active",
+    "target": "All Users",
+    "last_updated": "2024-07-15",
+    "sends_impressions": "10,000 / 9,500",
+    "clicks_opens": "500 / 1,000"
+  },
+  {
+    "campaign": "New User Welcome",
+    "start": "2024-01-01",
+    "end": "Ongoing",
+    "status": "Active",
+    "target": "New Signups",
+    "last_updated": "2024-07-16",
+    "sends_impressions": "5,000 / 4,800",
+    "clicks_opens": "300 / 600"
+  },
+  {
+    "campaign": "Holiday Special",
+    "start": "2023-11-01",
+    "end": "2023-12-31",
+    "status": "Completed",
+    "target": "Loyal Customers",
+    "last_updated": "2024-01-05",
+    "sends_impressions": "20,000 / 19,000",
+    "clicks_opens": "1,200 / 2,500"
+  }
+] 
