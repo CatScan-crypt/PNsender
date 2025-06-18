@@ -1,8 +1,9 @@
 import React from 'react';
-import { handleSendNotification } from '../handlers/notificationHandler';
-import './NotificationForm.css';
+import { handleSendNotification } from './handlers/notificationHandler';
+import { handlePostCampaignAnalytics } from './handlers/analyticsHandler';
+import './CampaignForm.css';
 
-interface NotificationFormProps {
+interface CampaignFormProps {
   title: string;
   setTitle: (title: string) => void;
   body: string;
@@ -14,7 +15,7 @@ interface NotificationFormProps {
   setIsSending: (isSending: boolean) => void;
 }
 
-export const NotificationForm: React.FC<NotificationFormProps> = ({
+export const CampaignForm: React.FC<CampaignFormProps> = ({
   title,
   setTitle,
   body,
@@ -27,13 +28,20 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
 }) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleSendNotification({
-      title,
-      body,
-      selectedTokens,
-      setSendResults,
-      setIsSending
-    });
+    try {
+      await handleSendNotification({
+        title,
+        body,
+        selectedTokens,
+        setSendResults,
+        setIsSending
+      });
+      
+      // Post campaign analytics after successful notification send
+      await handlePostCampaignAnalytics();
+    } catch (error) {
+      console.error('Error in notification process:', error);
+    }
   };
 
   return (

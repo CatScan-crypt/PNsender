@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TokenTable } from './UserTable/UserTable';
-import { NotificationForm } from './NotificationForm/NotificationForm';
+import { CampaignForm } from './CampaignForm/CampaignForm';
 import './Campaigns.css';
 
 const Campaigns: React.FC = () => {
@@ -19,7 +19,7 @@ const Campaigns: React.FC = () => {
           <TokenTable onSelectionChange={setSelectedTokens} />
         </div>
         
-        <NotificationForm
+        <CampaignForm
           title={title}
           setTitle={setTitle}
           body={body}
