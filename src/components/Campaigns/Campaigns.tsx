@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TokenTable } from './UserTable/UserTable';
+import { handleSendNotification } from './handlers/notificationHandler';
 import './Campaigns.css';
 
 const Campaigns: React.FC = () => {
@@ -9,40 +10,15 @@ const Campaigns: React.FC = () => {
   const [sendResults, setSendResults] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
 
-  const handleSendNotification = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !body || selectedTokens.length === 0) {
-      setSendResults(["Please fill title, body, and select at least one token."]);
-      return;
-    }
-    
-    setIsSending(true);
-    const results: string[] = [];
-    
-    try {
-      for (const t of selectedTokens) {
-        try {
-          const response = await fetch('/api/send-notification', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: t.token, title, body })
-          });
-          const data = await response.json();
-          
-          if (response.ok) {
-            results.push(`✅ Token ${t.token.slice(0, 8)}...: Sent! Message ID: ${data.messageId || ''}`);
-          } else {
-            results.push(`❌ Token ${t.token.slice(0, 8)}...: Error: ${data.error || 'Unknown error'}`);
-          }
-        } catch (err) {
-          results.push(`❌ Token ${t.token.slice(0, 8)}...: Network error`);
-        }
-      }
-    } finally {
-      setIsSending(false);
-    }
-    
-    setSendResults(results);
+    await handleSendNotification({
+      title,
+      body,
+      selectedTokens,
+      setSendResults,
+      setIsSending
+    });
   };
 
   return (
@@ -54,7 +30,7 @@ const Campaigns: React.FC = () => {
           <TokenTable onSelectionChange={setSelectedTokens} />
         </div>
         
-        <form onSubmit={handleSendNotification} className="notification-form">
+        <form onSubmit={onSubmit} className="notification-form">
           <h3 className="form-title">Create Notification</h3>
           
           <div className="form-group">
