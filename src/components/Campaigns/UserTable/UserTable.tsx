@@ -24,8 +24,12 @@ export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
+    const MAX_RETRIES = 60;
+    const RETRY_INTERVAL = 1000; // 1 second
+
     const fetchTokens = async () => {
       try {
         const response = await fetch('/api/tokens');
@@ -34,15 +38,23 @@ export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => 
         }
         const data = await response.json();
         setTokens(data.tokens);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
+        setError(null);
         setLoading(false);
+      } catch (err) {
+        if (retryCount < MAX_RETRIES) {
+          setError(`Connection error. Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
+          setTimeout(() => {
+            setRetryCount(prev => prev + 1);
+          }, RETRY_INTERVAL);
+        } else {
+          setError('Failed to connect after multiple attempts. Please check if the server is running.');
+          setLoading(false);
+        }
       }
     };
 
     fetchTokens();
-  }, []);
+  }, [retryCount]);
 
   useEffect(() => {
     if (onSelectionChange) {
