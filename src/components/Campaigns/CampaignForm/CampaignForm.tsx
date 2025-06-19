@@ -1,40 +1,34 @@
-import React from 'react';
+import * as React from 'react';
 import { handleSendNotification } from './handlers/notificationHandler';
 import { handlePostCampaignAnalytics } from './handlers/analyticsHandler';
+import { Title, Message, Image } from './GroupItems';
 import './CampaignForm.css';
+import type { CampaignFormProps } from './types/types';
 
-interface CampaignFormProps {
-  title: string;
-  setTitle: (title: string) => void;
-  body: string;
-  setBody: (body: string) => void;
-  selectedTokens: any[];
-  sendResults: string[];
-  isSending: boolean;
-  setSendResults: (results: string[]) => void;
-  setIsSending: (isSending: boolean) => void;
-}
 
 export const CampaignForm: React.FC<CampaignFormProps> = ({
   title,
   setTitle,
-  body,
-  setBody,
+  message,
+  setMessage,
   selectedTokens,
   sendResults,
   isSending,
   setSendResults,
-  setIsSending
+  setIsSending,
+  image,
+  setImage
 }) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await handleSendNotification({
         title,
-        body,
+        message,
         selectedTokens,
         setSendResults,
-        setIsSending
+        setIsSending,
+        image
       });
       
       // Post campaign analytics after successful notification send
@@ -48,31 +42,20 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     <form onSubmit={onSubmit} className="notification-form">
       <h3 className="form-title">Create Notification</h3>
       
-      <div className="form-group">
-        <label htmlFor="title">Title</label>
-        <input 
-          id="title"
-          type="text" 
-          placeholder="Enter notification title" 
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          className="form-input"
-          required
-        />
-      </div>
+      <Title 
+        title={title}
+        onTitleChange={setTitle}
+      />
       
-      <div className="form-group">
-        <label htmlFor="body">Message</label>
-        <textarea
-          id="body"
-          placeholder="Enter notification message"
-          value={body}
-          onChange={e => setBody(e.target.value)}
-          className="form-input form-textarea"
-          rows={4}
-          required
-        />
-      </div>
+      <Message 
+        message={message}
+        onMessageChange={setMessage}
+      />
+      
+      <Image
+        image={image}
+        onImageChange={setImage}
+      />
       
       <div className="form-footer">
         <button 

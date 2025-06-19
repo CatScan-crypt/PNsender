@@ -5,7 +5,8 @@ import './Campaigns.css';
 
 const Campaigns: React.FC = () => {
   const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [message, setMessage] = useState('');
+  const [image, setImage] = useState('');
   const [selectedTokens, setSelectedTokens] = useState<any[]>([]);
   const [sendResults, setSendResults] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
@@ -22,8 +23,10 @@ const Campaigns: React.FC = () => {
         <CampaignForm
           title={title}
           setTitle={setTitle}
-          body={body}
-          setBody={setBody}
+          message={message}
+          setMessage={setMessage}
+          image={image}
+          setImage={setImage}
           selectedTokens={selectedTokens}
           sendResults={sendResults}
           isSending={isSending}

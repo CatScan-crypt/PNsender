@@ -4,7 +4,8 @@ interface Token {
 
 interface SendNotificationParams {
   title: string;
-  body: string;
+  message: string;
+  image?: string;
   selectedTokens: Token[];
   setSendResults: (results: string[]) => void;
   setIsSending: (isSending: boolean) => void;
@@ -12,12 +13,13 @@ interface SendNotificationParams {
 
 export const handleSendNotification = async ({
   title,
-  body,
+  message,
+  image,
   selectedTokens,
   setSendResults,
   setIsSending
 }: SendNotificationParams) => {
-  if (!title || !body || selectedTokens.length === 0) {
+  if (!title || !message || selectedTokens.length === 0) {
     setSendResults(["Please fill title, body, and select at least one token."]);
     return;
   }
@@ -31,7 +33,12 @@ export const handleSendNotification = async ({
         const response = await fetch('/api/send-notification', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: t.token, title, body })
+          body: JSON.stringify({ 
+            token: t.token, 
+            title, 
+            body: message,  // Using message as body in the request
+            ...(image && { image })
+          })
         });
         const data = await response.json();
         
