@@ -105,6 +105,7 @@ export const TokenTable: React.FC<TokenTableProps> = ({ onSelectionChange }) => 
       const data = await response.json();
       setTokens(prev => prev.filter(token => !idsToDelete.includes(token.token)));
       setSelectedIds(new Set());
+      setRetryCount(prev => prev + 1); // Trigger re-fetch
       console.log('Deleted token IDs:', data.deleted);
     } catch (err) {
       console.error('Error deleting tokens:', err);

@@ -32,6 +32,16 @@ function Analytics() {
     );
   };
 
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      // Select all rows
+      setSelectedRows(analyticsData.map((_, index) => index));
+    } else {
+      // Deselect all
+      setSelectedRows([]);
+    }
+  };
+
   const handleDelete = async () => {
     try {
       // Delete each selected row from the backend
@@ -68,7 +78,14 @@ function Analytics() {
       <table>
         <thead>
           <tr>
-            <th>Select</th>
+            <th>
+              <input
+                type="checkbox"
+                checked={selectedRows.length === analyticsData.length && analyticsData.length > 0}
+                onChange={handleSelectAll}
+                aria-label="Select all rows"
+              />
+            </th>
             <th>ID</th>
             <th>Campaign</th>
             <th>Start</th>
