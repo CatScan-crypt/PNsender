@@ -11,7 +11,7 @@ interface CampaignAnalytics {
   };
 }
 
-export const handlePostCampaignAnalytics = async (title: string = "Test POST"): Promise<void> => {
+export const handlePostCampaignAnalytics = async (title: string = "Test POST", selectedTokens: any[] = []): Promise<void> => {
   try {
     const now = new Date().toISOString();
     const analyticsData: CampaignAnalytics = {
@@ -22,8 +22,8 @@ export const handlePostCampaignAnalytics = async (title: string = "Test POST"): 
         status: "Active",
         target: "Test Users",
         last_updated: now,
-        sends_impressions: "100 / 95",
-        clicks_opens: "50 / 100"
+        sends_impressions: `${selectedTokens.length} / 0`,
+        clicks_opens: "0 / 0"
       }
     };
 

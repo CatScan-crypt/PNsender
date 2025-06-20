@@ -47,6 +47,11 @@ tr.selected {
   background-color: #3d3d3d;
 }
 
+.date-time-cell {
+  white-space: pre-line;
+  word-break: break-all;
+}
+
 .delete-button {
   margin: 10px 0;
   padding: 8px 16px;

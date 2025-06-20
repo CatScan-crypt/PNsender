@@ -112,11 +112,17 @@ function Analytics() {
               </td>
               <td>{data.id}</td>
               <td>{data.data_field.campaign}</td>
-              <td>{data.data_field.start}</td>
+              <td className="date-time-cell">{
+                data.data_field.start && 
+                data.data_field.start.replace(' ', '\n')
+              }</td>
               <td>{data.data_field.end}</td>
               <td>{data.data_field.status}</td>
               <td>{data.data_field.target}</td>
-              <td>{data.data_field.last_updated}</td>
+              <td className="date-time-cell">{
+                data.data_field.last_updated && 
+                data.data_field.last_updated.replace(' ', '\n')
+              }</td>
               <td>{data.data_field.sends_impressions}</td>
               <td>{data.data_field.clicks_opens}</td>
             </tr>

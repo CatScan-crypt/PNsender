@@ -32,7 +32,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       });
       
       // Post campaign analytics after successful notification send
-      await handlePostCampaignAnalytics(title);
+      await handlePostCampaignAnalytics(title, selectedTokens);
     } catch (error) {
       console.error('Error in notification process:', error);
     }
