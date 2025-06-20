@@ -21,7 +21,7 @@ const app = express();
 
 // Enable CORS for requests from your frontend
 app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:3001'],  // Add both common React ports
+  origin: ['http://localhost:5174','http://localhost:5173', 'http://localhost:3001'],  // Add both common React ports
   credentials: true
 }));
 

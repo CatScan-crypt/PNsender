@@ -15,25 +15,38 @@ const pool = mysql.createPool({
 });
 
 analyticsRouter.post('/analytics', async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { data } = req.body;
-      if (!data) {
-        res.status(400).send('Data is required');
-        return;
-      }
-      const [result] = await pool.execute('INSERT INTO analyticsdata (data_field) VALUES (?)', [data]);
-      const resultSetHeader = result as ResultSetHeader;
-      res.status(201).json({ message: 'Data saved successfully', id: resultSetHeader.insertId });
-    } catch (error) {
-      console.error('Error saving analytics data:', error);
-      res.status(500).send('Failed to save analytics data');
+  try {
+    const { data } = req.body;
+    if (!data) {
+      res.status(400).send('Data is required');
+      return;
     }
-  });
-
+    const [result] = await pool.execute(
+      'INSERT INTO analyticsdata (data_field) VALUES (?)', 
+      [JSON.stringify(data)]  // Make sure to stringify the data
+    );
+    const resultSetHeader = result as ResultSetHeader;
+    res.status(201).json({ 
+      message: 'Data saved successfully', 
+      id: resultSetHeader.insertId,
+      data 
+    });
+  } catch (error) {
+    console.error('Error saving analytics data:', error);
+    res.status(500).send('Failed to save analytics data');
+  }
+});
 analyticsRouter.get('/analytics', async (req: Request, res: Response): Promise<void> => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM analyticsdata');
-    res.status(200).json(rows);
+    const [rows] = await pool.execute('SELECT id, data_field FROM analyticsdata');
+    const formattedRows = (rows as any[]).map(row => ({
+      id: row.id,
+      data_field: {
+        ...row.data_field,  // data_field is already an object, no need to parse
+         // Also include ID in the data_field
+      }
+    }));
+    res.status(200).json(formattedRows);
   } catch (error) {
     console.error('Error fetching analytics data:', error);
     res.status(500).send('Failed to fetch analytics data');

@@ -47,7 +47,7 @@ function Analytics() {
       // Delete each selected row from the backend
       await Promise.all(
         selectedRows.map(index => 
-          deleteAnalyticsData(analyticsData[index].data_field.id)
+          deleteAnalyticsData(analyticsData[index].id)
         )
       );
       
@@ -110,7 +110,7 @@ function Analytics() {
                   onChange={() => handleRowSelect(index)}
                 />
               </td>
-              <td>{data.data_field.id}</td>
+              <td>{data.id}</td>
               <td>{data.data_field.campaign}</td>
               <td>{data.data_field.start}</td>
               <td>{data.data_field.end}</td>

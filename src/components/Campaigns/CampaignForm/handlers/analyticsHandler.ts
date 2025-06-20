@@ -1,6 +1,5 @@
 interface CampaignAnalytics {
   data: {
-    id: string;
     campaign: string;
     start: string;
     end: string;
@@ -16,7 +15,6 @@ export const handlePostCampaignAnalytics = async (): Promise<void> => {
   try {
     const analyticsData: CampaignAnalytics = {
       data: {
-        id: "1",
         campaign: "Test POST",
         start: "2024-07-17",
         end: "2024-07-18",
