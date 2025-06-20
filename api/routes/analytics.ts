@@ -68,9 +68,9 @@ analyticsRouter.patch('/analytics', async (req: Request, res: Response): Promise
         .join(', ');
       
       const query = `
-        UPDATE analyticsdata 
-        SET data_field = JSON_SET(data_field, ${setClause})
-        WHERE data_field->'$.id' = ?
+      UPDATE analyticsdata 
+      SET data_field = JSON_SET(data_field, ${setClause})
+      WHERE id = ?
       `;
       
       const [result] = await pool.execute(query, [id]);
@@ -88,7 +88,10 @@ analyticsRouter.patch('/analytics', async (req: Request, res: Response): Promise
     }
   });
 
-analyticsRouter.delete('/analytics', async (req: Request, res: Response): Promise<void> => {
+  analyticsRouter.delete('/analytics', async (req: Request, res: Response): Promise<void> => {
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+  
     try {
       const { id } = req.body;
       
@@ -97,23 +100,36 @@ analyticsRouter.delete('/analytics', async (req: Request, res: Response): Promis
         return;
       }
       
-      const query = `
-        DELETE FROM analyticsdata 
-        WHERE data_field->'$.id' = ?
-      `;
+      // 1. Delete the row
+      await connection.execute(
+        `DELETE FROM analyticsdata WHERE id = ?`,
+        [id]
+      );
+  
+      // 2. Get all remaining rows ordered by ID
+      const [rows] = await connection.execute('SELECT id FROM analyticsdata ORDER BY id');
+      const ids = (rows as any[]).map(row => row.id);
       
-      const [result] = await pool.execute(query, [id]);
-      const resultSetHeader = result as ResultSetHeader;
-      
-      if (resultSetHeader.affectedRows === 0) {
-        res.status(404).json({ message: 'Record not found' });
-        return;
+      // 3. Update each row with new sequential IDs
+      for (let i = 0; i < ids.length; i++) {
+        await connection.execute(
+          'UPDATE analyticsdata SET id = ? WHERE id = ?',
+          [i + 1, ids[i]]
+        );
       }
+  
+      // 4. Reset auto-increment
+      const newAutoIncrement = ids.length + 1;
+      await connection.execute(`ALTER TABLE analyticsdata AUTO_INCREMENT = ${newAutoIncrement}`);
       
-      res.status(200).json({ message: 'Record deleted successfully' });
+      await connection.commit();
+      res.status(200).json({ message: 'Record deleted and IDs reordered' });
     } catch (error) {
+      await connection.rollback();
       console.error('Error deleting analytics data:', error);
       res.status(500).send('Failed to delete analytics data');
+    } finally {
+      connection.release();
     }
   });
 

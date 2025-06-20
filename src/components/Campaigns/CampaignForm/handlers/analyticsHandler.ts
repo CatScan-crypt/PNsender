@@ -11,16 +11,17 @@ interface CampaignAnalytics {
   };
 }
 
-export const handlePostCampaignAnalytics = async (): Promise<void> => {
+export const handlePostCampaignAnalytics = async (title: string = "Test POST"): Promise<void> => {
   try {
+    const now = new Date().toISOString();
     const analyticsData: CampaignAnalytics = {
       data: {
-        campaign: "Test POST",
-        start: "2024-07-17",
-        end: "2024-07-18",
+        campaign: title,
+        start: now,
+        end: "-",
         status: "Active",
         target: "Test Users",
-        last_updated: "2024-07-17",
+        last_updated: now,
         sends_impressions: "100 / 95",
         clicks_opens: "50 / 100"
       }
