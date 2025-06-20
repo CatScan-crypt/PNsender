@@ -13,7 +13,10 @@ interface CampaignAnalytics {
 
 export const handlePostCampaignAnalytics = async (title: string = "Test POST", selectedTokens: any[] = []): Promise<void> => {
   try {
-    const now = new Date().toISOString();
+    const now = new Date().toISOString()
+      .replace(/T/, ' ')
+      .replace(/\..+/, '')
+      .slice(0, -3);
     const analyticsData: CampaignAnalytics = {
       data: {
         campaign: title,
