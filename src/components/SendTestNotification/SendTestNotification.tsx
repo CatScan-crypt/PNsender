@@ -27,7 +27,7 @@ const SendTestNotification = () => {
         },
         body: JSON.stringify({ token, title, body }),
       });
-
+      console.log(body,token);
       const data = await response.json();
 
       if (response.ok) {
