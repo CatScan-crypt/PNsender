@@ -22,7 +22,6 @@ router.post('/send-notification', async (req: Request, res: Response): Promise<v
       body,
       // Add image to notification, use default if not provided
       image: image ?? DEFAULT_IMAGE,
-      badge: image ?? DEFAULT_IMAGE,
     },
     
     token: token,
